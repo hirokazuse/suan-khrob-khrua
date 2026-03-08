@@ -187,14 +187,51 @@ nav.scrolled { background:rgba(22,48,34,0.96); backdrop-filter:blur(8px); paddin
 }
 
 /* JOIN */
-.join-section { background:var(--cream); padding:120px 40px; text-align:center; }
-.join-inner { max-width:640px; margin:0 auto; }
-.join-badge { display:inline-block; border:1px solid var(--gold); color:var(--gold); font-size:11px; letter-spacing:0.25em; padding:6px 20px; text-transform:uppercase; margin-bottom:40px; font-family:'Cormorant Garamond',serif; }
-.join-title { font-family:'Noto Serif JP',serif; font-size:clamp(32px,5vw,52px); font-weight:700; color:var(--green-ink); line-height:1.3; margin-bottom:24px; }
-.join-sub { font-size:15px; line-height:2; color:var(--text-mid); margin-bottom:16px; }
-.join-limit { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--gold); margin-bottom:48px; }
-.join-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
-.join-note { font-size:12px; color:var(--text-faint); letter-spacing:0.1em; }
+.join-section { background:var(--green-ink); padding:100px 40px; }
+.join-inner { max-width:720px; margin:0 auto; }
+.join-badge { display:inline-block; border:1px solid rgba(191,140,58,0.5); color:var(--gold-light); font-size:11px; letter-spacing:0.25em; padding:6px 20px; text-transform:uppercase; margin-bottom:40px; font-family:'Cormorant Garamond',serif; }
+.join-title { font-family:'Noto Serif JP',serif; font-size:clamp(28px,4vw,48px); font-weight:700; color:var(--cream); line-height:1.3; margin-bottom:20px; }
+.join-sub { font-size:15px; line-height:2; color:rgba(251,246,236,0.65); margin-bottom:48px; }
+
+/* クラファン風 募集状況ボックス */
+.募集box { background:rgba(255,255,255,0.04); border:1px solid rgba(191,140,58,0.25); padding:40px 48px; margin-bottom:40px; position:relative; overflow:hidden; }
+.募集box::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.募集-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; }
+.募集-main { text-align:left; }
+.募集-label { font-size:11px; letter-spacing:0.25em; color:rgba(191,140,58,0.7); text-transform:uppercase; display:block; margin-bottom:8px; }
+.募集-count { font-family:'Cormorant Garamond',serif; font-size:64px; font-weight:600; color:var(--gold-light); line-height:1; }
+.募集-unit { font-size:18px; color:rgba(251,246,236,0.5); margin-left:8px; }
+.募集-sub { text-align:right; }
+.募集-applied-num { font-family:'Cormorant Garamond',serif; font-size:36px; color:var(--cream); display:block; line-height:1; }
+.募集-applied-label { font-size:11px; letter-spacing:0.15em; color:rgba(251,246,236,0.4); }
+
+/* プログレスバー */
+.progress-wrap { margin-bottom:16px; }
+.progress-track { height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius:4px; transition:width 1.5s cubic-bezier(0.25,1,0.5,1); width:0; }
+.progress-labels { display:flex; justify-content:space-between; margin-top:8px; }
+.progress-pct { font-family:'Cormorant Garamond',serif; font-size:14px; color:var(--gold-light); }
+.progress-cap { font-size:11px; color:rgba(251,246,236,0.35); letter-spacing:0.15em; }
+
+/* 最近の申込みフィード */
+.recent-feed { border-top:1px solid rgba(191,140,58,0.12); padding-top:20px; margin-top:4px; }
+.recent-title { font-size:10px; letter-spacing:0.25em; color:rgba(191,140,58,0.5); text-transform:uppercase; margin-bottom:12px; display:block; }
+.feed-list { display:flex; flex-direction:column; gap:8px; }
+.feed-item { display:flex; align-items:center; gap:12px; font-size:12px; color:rgba(251,246,236,0.45); }
+.feed-dot { width:6px; height:6px; border-radius:50%; background:var(--green-sage); flex-shrink:0; animation:blink 2s ease infinite; }
+.feed-dot.new { background:var(--gold); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.feed-time { color:rgba(191,140,58,0.5); margin-left:auto; font-family:'Cormorant Garamond',serif; font-size:13px; }
+
+/* 緊急バナー */
+.urgency-banner { background:rgba(191,140,58,0.12); border:1px solid rgba(191,140,58,0.3); padding:12px 20px; display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+.urgency-icon { font-size:18px; animation:pulse-icon 1.5s ease infinite; }
+@keyframes pulse-icon { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+.urgency-text { font-size:13px; color:rgba(251,246,236,0.7); }
+.urgency-text strong { color:var(--gold-light); }
+
+.join-actions { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:24px; }
+.join-note { font-size:12px; color:rgba(251,246,236,0.3); letter-spacing:0.1em; text-align:center; }
 
 /* FOOTER */
 footer { background:var(--green-ink); padding:56px 40px 40px; }
@@ -589,15 +626,64 @@ footer { background:var(--green-ink); padding:56px 40px 40px; }
 <!-- JOIN -->
 <section class="join-section" id="join">
   <div class="join-inner reveal">
-    <div class="join-badge">First Season — 2025</div>
-    <h2 class="join-title">3月マンゴーを<br>一緒に楽しもう</h2>
-    <p class="join-sub">最初のシーズンは<strong>20名限定</strong>。Facebookコミュニティに参加して、注文フォームを送るだけで完了です。農家の成長を見守りながら、一緒に楽しみ、応援する体験を。</p>
-    <p class="join-limit">⚡ 残り枠わずか — ที่นั่งมีจำกัด 20 คน</p>
+    <div class="join-badge">First Season — 3月マンゴー 先行受付</div>
+    <h2 class="join-title">残り枠、あとわずか。<br>今シーズンを逃さないで。</h2>
+    <p class="join-sub">
+      最初のシーズンは<strong style="color:var(--cream);">20名限定</strong>。タイから直送、本物の熟成マンゴーを産地直送価格で。Facebookグループに参加するだけで予約が完了します。
+    </p>
+
+    <!-- 募集状況ボックス（ここの数字だけ更新すればOK） -->
+    <div class="募集box">
+      <div class="募集-header">
+        <div class="募集-main">
+          <span class="募集-label">Remaining Slots — 残り枠</span>
+          <!-- ↓ この数字だけ書き換えて更新 -->
+          <div>
+            <span class="募集-count" id="remaining">17</span>
+            <span class="募集-unit">名</span>
+          </div>
+        </div>
+        <div class="募集-sub">
+          <!-- ↓ 申込済み人数もここを書き換え -->
+          <span class="募集-applied-num" id="applied">3</span>
+          <span class="募集-applied-label">名が申込み済み</span>
+        </div>
+      </div>
+
+      <!-- プログレスバー -->
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <!-- data-pct を申込数/20×100 で更新 -->
+          <div class="progress-fill" id="progress-fill" data-pct="15"></div>
+        </div>
+        <div class="progress-labels">
+          <span class="progress-pct" id="progress-pct">15%</span>
+          <span class="progress-cap">定員 20名</span>
+        </div>
+      </div>
+
+      <!-- 最近の申込みフィード（手動で更新） -->
+      <div class="recent-feed">
+        <span class="recent-title">Recent Activity — 最近の申込み</span>
+        <div class="feed-list">
+          <div class="feed-item"><span class="feed-dot new"></span>東京都在住・Nさんが申込みました<span class="feed-time">2時間前</span></div>
+          <div class="feed-item"><span class="feed-dot"></span>埼玉県在住・Sさんが申込みました<span class="feed-time">1日前</span></div>
+          <div class="feed-item"><span class="feed-dot"></span>千葉県在住・Pさんが申込みました<span class="feed-time">2日前</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 緊急バナー -->
+    <div class="urgency-banner">
+      <span class="urgency-icon">⚡</span>
+      <p class="urgency-text">締め切りは<strong>3月末</strong>。タイからの入荷数量は限定のため、定員に達し次第受付終了します。</p>
+    </div>
+
     <div class="join-actions">
-      <a href="https://www.facebook.com/" target="_blank" class="btn-primary">Facebookグループに参加する</a>
+      <a href="https://www.facebook.com/" target="_blank" class="btn-primary">今すぐ申込む — สมัครเลย</a>
       <a href="https://line.me/" target="_blank" class="btn-ghost">LINE で問い合わせ</a>
     </div>
-    <p class="join-note">参加は無料 · 購入は任意 · タイ語対応可</p>
+    <p class="join-note">参加は無料 · 購入は任意 · タイ語対応可 · ที่นั่งมีจำกัด</p>
   </div>
 </section>
 
@@ -614,8 +700,27 @@ footer { background:var(--green-ink); padding:56px 40px 40px; }
 <script>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
-  const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold:0.1 });
+
+  // Reveal on scroll
+  const obs = new IntersectionObserver(entries => entries.forEach(e => {
+    if(e.isIntersecting) e.target.classList.add('visible');
+  }), { threshold:0.1 });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // プログレスバー — 見えたらアニメーション
+  const fill = document.getElementById('progress-fill');
+  if(fill) {
+    const pct = fill.dataset.pct || 0;
+    const barObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting) {
+          fill.style.width = pct + '%';
+          barObs.disconnect();
+        }
+      });
+    }, { threshold:0.5 });
+    barObs.observe(fill);
+  }
 </script>
 </body>
 </html>
