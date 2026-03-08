@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สวนครอบครัว – ชุมชนซื้อร่วมไทย-ญี่ปุ่น</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C8922A;
+    --gold-light: #E8B84B;
+    --green-deep: #1A3D2B;
+    --green-mid: #2D6A4F;
+    --green-light: #52B788;
+    --cream: #FDF6E3;
+    --warm-white: #FAFAF5;
+    --text-dark: #1C1C1C;
+    --text-mid: #4A4A3A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--warm-white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--green-deep);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 40px 24px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 110%, rgba(200,146,42,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(82,183,136,0.08) 0%, transparent 60%);
+  }
+
+  .leaf-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cellipse cx='60' cy='60' rx='20' ry='50' fill='%23ffffff' transform='rotate(30 60 60)'/%3E%3Cellipse cx='60' cy='60' rx='20' ry='50' fill='%23ffffff' transform='rotate(90 60 60)'/%3E%3Cellipse cx='60' cy='60' rx='20' ry='50' fill='%23ffffff' transform='rotate(150 60 60)'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+  }
+
+  .hero-badge {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(48px, 10vw, 96px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title-en {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(16px, 3vw, 24px);
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+  }
+
+  .hero-sub {
+    font-size: clamp(14px, 2.5vw, 17px);
+    color: rgba(253,246,227,0.75);
+    text-align: center;
+    line-height: 1.9;
+    max-width: 560px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green-deep);
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 48px;
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: background 0.3s, transform 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+
+  .hero-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    animation: pulse 2s ease infinite;
+  }
+
+  /* ── SEASON BAND ── */
+  .season-band {
+    background: var(--gold);
+    padding: 14px 24px;
+    text-align: center;
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 14px;
+    color: var(--green-deep);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 80px 24px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 700;
+    color: var(--green-deep);
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+
+  .section-body {
+    font-size: 16px;
+    color: var(--text-mid);
+    line-height: 2;
+  }
+
+  /* ── ABOUT ── */
+  .about {
+    background: var(--cream);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-map {
+    background: var(--green-deep);
+    border-radius: 4px;
+    padding: 40px 32px;
+    color: var(--cream);
+    font-family: 'Noto Serif Thai', serif;
+  }
+
+  .map-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .map-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .map-line {
+    width: 1px;
+    height: 24px;
+    background: rgba(200,146,42,0.3);
+    margin: 4px 0 4px 4px;
+  }
+
+  .map-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+
+  .map-place {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  .map-detail {
+    font-size: 13px;
+    color: rgba(253,246,227,0.6);
+    line-height: 1.6;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  /* ── FRUIT FEATURE ── */
+  .fruits {
+    background: var(--warm-white);
+  }
+
+  .fruit-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  .fruit-card {
+    border: 1px solid rgba(200,146,42,0.2);
+    border-radius: 4px;
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fruit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+  }
+
+  .fruit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  .fruit-season {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .fruit-name-th {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--green-deep);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .fruit-name-jp {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-mid);
+    margin-bottom: 20px;
+  }
+
+  .fruit-desc {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+
+  .fruit-tag {
+    display: inline-block;
+    background: rgba(200,146,42,0.1);
+    color: var(--gold);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-top: 16px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how {
+    background: var(--green-deep);
+    color: var(--cream);
+  }
+
+  .how .section-title { color: var(--cream); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-top: 48px;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(200,146,42,0.3);
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+  }
+
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--green-deep);
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: rgba(253,246,227,0.55);
+    line-height: 1.7;
+  }
+
+  /* ── COMMUNITY ── */
+  .community {
+    background: var(--cream);
+  }
+
+  .values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 48px;
+  }
+
+  .value-item {
+    padding: 32px 24px;
+    background: white;
+    border-radius: 2px;
+  }
+
+  .value-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .value-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-deep);
+    margin-bottom: 12px;
+  }
+
+  .value-desc {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+
+  /* ── JOIN ── */
+  .join {
+    background: var(--warm-white);
+    text-align: center;
+  }
+
+  .join-box {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 64px 48px;
+    background: var(--green-deep);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .join-box::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(200,146,42,0.08);
+  }
+
+  .join-box .section-title {
+    color: var(--cream);
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .join-box .section-body {
+    color: rgba(253,246,227,0.7);
+    margin-bottom: 32px;
+    font-size: 15px;
+  }
+
+  .join-limit {
+    font-size: 12px;
+    color: var(--gold-light);
+    letter-spacing: 0.15em;
+    margin-bottom: 32px;
+  }
+
+  .join-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--green-deep);
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 48px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  .join-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #111;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .footer-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.15em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .fruit-cards { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .values { grid-template-columns: 1fr; }
+    .join-box { padding: 48px 28px; }
+  }
+
+  @media (max-width: 480px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="leaf-bg"></div>
+  <p class="hero-badge">Thai–Japan Community Club</p>
+  <h1 class="hero-title">สวนครอบครัว</h1>
+  <p class="hero-title-en">Suan Khrob Khrua — Family Garden</p>
+  <div class="hero-divider"></div>
+  <p class="hero-sub">
+    タイと日本、家族農家から食卓へ。<br>
+    国境を越えた食のコミュニティに参加しませんか。<br>
+    <span style="font-family:'Noto Serif Thai',serif; color:rgba(253,246,227,0.5); font-size:13px;">เชื่อมคนไทยในญี่ปุ่นกับเกษตรกรครอบครัว</span>
+  </p>
+  <a href="#join" class="hero-cta">今すぐ参加する — เข้าร่วมเลย</a>
+  <p class="scroll-hint">SCROLL ↓</p>
+</section>
+
+<!-- SEASON BAND -->
+<div class="season-band">
+  🥭 &nbsp;3月 マンゴー先行受付中 — รับออเดอร์มะม่วงเดือนมีนาคม&nbsp; 🥭
+</div>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="fade-in">
+        <span class="section-label">Our Story</span>
+        <h2 class="section-title">家族農家から<br>あなたの食卓へ</h2>
+        <p class="section-body">
+          タイ・ノンカイ県の家族農園と、鹿児島の農地をつなぐ産直コミュニティです。
+          商社・卸・小売を通さず、農家から直接仕入れることで、本物の味を適正な価格でお届けします。
+          <br><br>
+          単なる輸入ではなく、メコン川沿いの農家のストーリーを、日本に住むタイ人の皆さんと共有したいと思っています。
+        </p>
+      </div>
+      <div class="about-visual fade-in">
+        <div class="about-map">
+          <div class="map-node">
+            <div>
+              <div class="map-dot" style="background:var(--gold)"></div>
+            </div>
+            <div>
+              <p class="map-label">THAILAND</p>
+              <p class="map-place">Nong Khai Province</p>
+              <p class="map-detail">妻の親族が営む家族農園<br>マンゴー・タイハーブ・ドリアン</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;margin-bottom:28px;">
+            <div class="map-line"></div>
+          </div>
+          <div class="map-node">
+            <div>
+              <div class="map-dot" style="background:var(--green-light)"></div>
+            </div>
+            <div>
+              <p class="map-label">JAPAN</p>
+              <p class="map-place">Kagoshima Prefecture</p>
+              <p class="map-detail">ラオス出身農家と協力<br>ガパオ・タイハーブ 約15ha</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;margin-bottom:28px;">
+            <div class="map-line"></div>
+          </div>
+          <div class="map-node">
+            <div>
+              <div class="map-dot" style="background:var(--gold-light)"></div>
+            </div>
+            <div>
+              <p class="map-label">YOU</p>
+              <p class="map-place">日本全国のタイ人コミュニティ</p>
+              <p class="map-detail">共同購入で本物の味を</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRUITS -->
+<section class="fruits">
+  <div class="container">
+    <span class="section-label fade-in">2025 Season Lineup</span>
+    <h2 class="section-title fade-in">今シーズンのラインナップ</h2>
+    <div class="fruit-cards">
+      <div class="fruit-card fade-in">
+        <span class="fruit-season">MARCH 2025 — มีนาคม</span>
+        <p class="fruit-name-th">มะม่วง</p>
+        <p class="fruit-name-jp">Mango / マンゴー</p>
+        <p class="fruit-desc">
+          ノンカイ産ナムドクマイ種。タイの太陽をたっぷり受けた甘みと繊維のない滑らかな果肉。
+          日本のスーパーでは絶対に手に入らない本物の熟成マンゴーをお届けします。
+        </p>
+        <span class="fruit-tag">📋 先行受付中</span>
+      </div>
+      <div class="fruit-card fade-in">
+        <span class="fruit-season">MAY 2025 — พฤษภาคม</span>
+        <p class="fruit-name-th">ทุเรียน</p>
+        <p class="fruit-name-jp">Durian / ドリアン</p>
+        <p class="fruit-desc">
+          果物の王様。産地直送だからこそ届く、完熟の濃厚なクリーミーな果肉。
+          シーズン到来に合わせてコミュニティ会員に優先案内します。
+        </p>
+        <span class="fruit-tag" style="background:rgba(45,106,79,0.1);color:var(--green-mid);">🔜 5月予定</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="container">
+    <span class="section-label" style="color:var(--gold-light);">How It Works</span>
+    <h2 class="section-title">4ステップで届く</h2>
+    <div class="steps">
+      <div class="step fade-in">
+        <div class="step-num">1</div>
+        <p class="step-title">Facebookで<br>告知を確認</p>
+        <p class="step-desc">入荷情報・価格・締め切り日をコミュニティで発表</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">2</div>
+        <p class="step-title">フォームで<br>注文する</p>
+        <p class="step-desc">Googleフォームで簡単に数量・配送先を入力</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">3</div>
+        <p class="step-title">銀行振込で<br>支払い</p>
+        <p class="step-desc">確認後、入金情報をお送りします</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">4</div>
+        <p class="step-title">自宅へ<br>お届け</p>
+        <p class="step-desc">タイから直輸入、個別発送でお届け</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY VALUES -->
+<section class="community">
+  <div class="container">
+    <span class="section-label fade-in">Why Join Us</span>
+    <h2 class="section-title fade-in">このコミュニティの<br>3つの約束</h2>
+    <div class="values">
+      <div class="value-item fade-in">
+        <span class="value-icon">🌿</span>
+        <p class="value-title">本物の産地直送</p>
+        <p class="value-desc">商社・卸を一切通さず、タイの家族農家から直接仕入れます。スーパーでは買えない本物の味。</p>
+      </div>
+      <div class="value-item fade-in">
+        <span class="value-icon">🤝</span>
+        <p class="value-title">タイ人が運営</p>
+        <p class="value-desc">コミュニティ責任者はタイ出身。言語・文化・食へのこだわりを同じ目線で共有できます。</p>
+      </div>
+      <div class="value-item fade-in">
+        <span class="value-icon">💛</span>
+        <p class="value-title">助け合いの精神</p>
+        <p class="value-desc">ブン（บุญ）の精神で、小さな農家を直接マーケットへ。買うことが農家の支援になります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="join" id="join">
+  <div class="container">
+    <div class="join-box">
+      <span class="section-label" style="color:var(--gold-light);">First Season</span>
+      <h2 class="section-title">3月マンゴーを<br>一緒に楽しもう</h2>
+      <p class="section-body">
+        最初のシーズンは20名限定。<br>
+        Facebookグループへの参加＋注文フォームの記入だけで完了です。
+      </p>
+      <p class="join-limit">⚡ 残り枠わずか — ที่นั่งมีจำกัด</p>
+      <a href="https://www.facebook.com/" target="_blank" class="join-btn">
+        Facebookグループに参加する
+      </a>
+      <p style="font-size:12px;color:rgba(253,246,227,0.35);margin-top:20px;">
+        参加は無料です。購入は任意。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-logo">สวนครอบครัว</p>
+  <p class="footer-sub">Thai–Japan Family Garden Community &nbsp;|&nbsp; Nong Khai × Kagoshima</p>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
