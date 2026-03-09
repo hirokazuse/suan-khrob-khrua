@@ -64,5 +64,22 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+//const PORT = process.env.PORT || 3000;
+//app.listen(PORT, () => console.log(`Messenger Bot is running on port ${PORT}`));
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Messenger Bot is running on port ${PORT}`));
+
+// 環境変数チェック
+console.log('=== Checking environment variables ===');
+console.log('VERIFY_TOKEN:', process.env.VERIFY_TOKEN ? 'SET' : 'NOT SET');
+console.log('GEMINI_API_KEY:', process.env.GEMINI_API_KEY ? 'SET' : 'NOT SET');
+console.log('GAS_URL:', process.env.GAS_URL ? 'SET' : 'NOT SET');
+console.log('=====================================');
+
+app.listen(PORT, () => {
+  console.log(`Messenger Bot is running on port ${PORT}`);
+});
+
+// エラーハンドラ
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Error:', err);
+});
