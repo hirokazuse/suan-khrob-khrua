@@ -1,0 +1,14 @@
+{
+  "name": "suan-khrob-khrua-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "axios": "^1.6.0",
+    "@google/generative-ai": "^0.2.1"
+  }
+}
