@@ -35,7 +35,7 @@ app.post('/webhook', async (req, res) => {
         try {
           // 1. Geminiでテキスト解析
           //gemini-2.0-flash
-          const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+          //const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
           //const model = genAI.getGenerativeModel({ model: "gemini-3-flash" });
           //const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
           //const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
