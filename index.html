@@ -1,66 +1,458 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สวนครอบครัว — Suan Khrob Khrua</title>
+  <title>Suan Khrob Khrua สวนครอบครัว</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    body { background: linear-gradient(145deg, #faf8f2 0%, #f0f7f0 40%, #e8f5e8 100%); }
-    .decorative-line {
-      width: 60px; height: 1.5px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      margin: 1.5rem auto;
+    body { font-family: 'DM Sans', 'Noto Sans Thai', sans-serif; }
+
+    /* ===== HERO ===== */
+    .lp-hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 2rem 3rem;
+      background: linear-gradient(155deg, #faf8f2 0%, #f0f7f0 45%, #e8f5e8 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .landing-leaf {
-      position: fixed;
-      opacity: 0.06;
+
+    .lp-hero::before {
+      content: '';
+      position: absolute;
+      top: -15%; right: -10%;
+      width: 55vw; height: 70vh;
+      background: radial-gradient(ellipse, rgba(122,184,122,0.15) 0%, transparent 70%);
       pointer-events: none;
-      font-size: 15rem;
-      user-select: none;
     }
-    .leaf-1 { top: -5%; right: -5%; transform: rotate(20deg); }
-    .leaf-2 { bottom: -8%; left: -5%; transform: rotate(-15deg); font-size: 12rem; }
+
+    .lp-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .lp-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      color: var(--green-deep);
+      line-height: 1.1;
+      margin-bottom: 0.3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lp-title-sub {
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--text-mid);
+      margin-bottom: 0.8rem;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lp-tagline-th {
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: var(--text-light);
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== LANG SELECT (TOP) ===== */
+    .lp-lang-top {
+      background: var(--white);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--green-pale);
+    }
+
+    .lp-lang-top-inner { max-width: 640px; margin: 0 auto; }
+
+    .lp-lang-top .section-label { margin-bottom: 1.5rem; display: block; }
+
+    .lang-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      align-items: center;
+    }
+
+    .lang-choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 2rem;
+      background: var(--cream);
+      border: 1.5px solid var(--green-pale);
+      border-radius: 4px;
+      text-decoration: none;
+      width: 100%;
+      max-width: 400px;
+      transition: all 0.25s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .lang-choice-btn:hover {
+      border-color: var(--green-mid);
+      transform: translateX(5px);
+      box-shadow: 0 6px 18px var(--shadow);
+      background: var(--white);
+    }
+
+    .lang-flag { font-size: 1.8rem; flex-shrink: 0; }
+    .lang-text { text-align: left; }
+
+    .lang-name {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--green-deep);
+      font-style: italic;
+    }
+
+    .lang-desc { font-size: 0.78rem; color: var(--text-light); }
+
+    /* ===== HOW (Thai main) ===== */
+    .lp-how {
+      background: var(--green-mist);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .lp-how-inner { max-width: 860px; margin: 0 auto; }
+
+    .lp-how h2 {
+      font-family: 'Noto Sans Thai', 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      color: var(--green-deep);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .lp-how p {
+      font-family: 'Noto Sans Thai', sans-serif;
+      color: var(--text-mid);
+      font-size: 0.95rem;
+      max-width: 55ch;
+      margin: 0 auto 3rem;
+      line-height: 1.9;
+    }
+
+    .lp-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 3rem;
+    }
+
+    .lp-flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.4rem 1.8rem;
+      background: var(--white);
+      border-radius: 4px;
+      min-width: 130px;
+      border: 1px solid var(--green-pale);
+    }
+
+    .lp-flow-icon { font-size: 1.6rem; }
+
+    .lp-flow-label {
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--green-deep);
+      line-height: 1.4;
+    }
+
+    .lp-flow-arrow {
+      font-size: 1.3rem;
+      color: var(--green-light);
+      padding: 0 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .lp-benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      text-align: left;
+    }
+
+    .lp-benefit {
+      padding: 1.6rem;
+      border: 1px solid var(--green-pale);
+      border-radius: 4px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lp-benefit::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+    }
+
+    .lp-benefit-icon { font-size: 1.4rem; margin-bottom: 0.7rem; display: block; }
+
+    .lp-benefit h3 {
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--green-deep);
+      margin-bottom: 0.4rem;
+      line-height: 1.5;
+    }
+
+    .lp-benefit p {
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ===== TARGET ===== */
+    .lp-target {
+      background: var(--white);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .lp-target-inner { max-width: 700px; margin: 0 auto; }
+
+    .lp-target h2 {
+      font-family: 'Noto Sans Thai', 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: var(--green-deep);
+      margin-bottom: 1.8rem;
+      line-height: 1.4;
+    }
+
+    .lp-target-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      justify-content: center;
+    }
+
+    .lp-target-chip {
+      padding: 0.6rem 1.4rem;
+      background: var(--green-mist);
+      border: 1.5px solid var(--green-mid);
+      border-radius: 30px;
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 0.88rem;
+      color: var(--green-deep);
+      font-weight: 500;
+    }
+
+    /* ===== VISION ===== */
+    .lp-vision {
+      background: var(--green-deep);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .lp-vision-inner { max-width: 680px; margin: 0 auto; }
+    .lp-vision .section-label { color: var(--gold); display: block; margin-bottom: 1rem; }
+
+    .lp-vision h2 {
+      font-family: 'Noto Sans Thai', 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      color: var(--white);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .lp-vision p {
+      font-family: 'Noto Sans Thai', sans-serif;
+      color: rgba(255,255,255,0.72);
+      font-size: 0.95rem;
+      line-height: 1.9;
+    }
+
+    /* ===== FOOTER ===== */
+    .lp-footer {
+      background: var(--text-dark);
+      color: rgba(255,255,255,0.5);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    .lp-footer-logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold-light);
+      font-style: italic;
+      font-size: 1.3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .lp-hero > * { animation: fadeUp 0.7s ease both; }
+    .lp-hero > *:nth-child(2) { animation-delay: 0.08s; }
+    .lp-hero > *:nth-child(3) { animation-delay: 0.16s; }
+    .lp-hero > *:nth-child(4) { animation-delay: 0.24s; }
+
+    @media (max-width: 600px) {
+      .lp-flow { flex-direction: column; }
+      .lp-flow-arrow { transform: rotate(90deg); }
+      .lang-choice-btn { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <div class="landing-leaf leaf-1">🌿</div>
-  <div class="landing-leaf leaf-2">🌿</div>
 
-  <div class="landing">
-    <div class="landing-inner">
-      <div class="landing-sub">Thai–Japan Family Farm Project</div>
-      <div class="landing-logo">สวนครอบครัว</div>
-      <div class="decorative-line"></div>
-      <p class="landing-tagline">
-        From family farms in Nong Khai and Chiba,<br>
-        bringing authentic Thai flavors to your table.
-      </p>
+<!-- HERO -->
+<div class="lp-hero">
+  <div class="lp-eyebrow">Community-Driven Import Platform</div>
+  <h1 class="lp-title">สวนครอบครัว</h1>
+  <p class="lp-title-sub">Suan Khrob Khrua</p>
+  <p class="lp-tagline-th">แพลตฟอร์มสั่งซื้อร่วมสินค้าไทยสำหรับชุมชนไทยในต่างประเทศ</p>
+</div>
 
-      <div class="lang-choice">
-        <a href="ja/index.html" class="lang-choice-btn">
-          <span class="lang-flag">🇯🇵</span>
-          <span class="lang-text">
-            <span class="lang-name">日本語版</span>
-            <span class="lang-desc">Japanese — タイと日本の家族農園から</span>
-          </span>
-        </a>
-        <a href="th/index.html" class="lang-choice-btn">
-          <span class="lang-flag">🇹🇭</span>
-          <span class="lang-text">
-            <span class="lang-name">ภาษาไทย</span>
-            <span class="lang-desc">Thai — จากไร่ครอบครัวไทยและญี่ปุ่น</span>
-          </span>
-        </a>
-        <a href="en/index.html" class="lang-choice-btn">
-          <span class="lang-flag">🌏</span>
-          <span class="lang-text">
-            <span class="lang-name">English</span>
-            <span class="lang-desc">From our farms to your table</span>
-          </span>
-        </a>
+<!-- LANG SELECT (TOP) -->
+<div class="lp-lang-top">
+  <div class="lp-lang-top-inner">
+    <span class="section-label">เลือกภาษา / 言語を選択 / Select Language</span>
+    <div class="lang-choice">
+      <a href="th/index.html" class="lang-choice-btn">
+        <span class="lang-flag">🇹🇭</span>
+        <span class="lang-text">
+          <span class="lang-name">ภาษาไทย</span>
+          <span class="lang-desc">สำหรับชุมชนไทยในต่างประเทศ</span>
+        </span>
+      </a>
+      <a href="ja/index.html" class="lang-choice-btn">
+        <span class="lang-flag">🇯🇵</span>
+        <span class="lang-text">
+          <span class="lang-name">日本語版</span>
+          <span class="lang-desc">タイと日本の家族農園から</span>
+        </span>
+      </a>
+      <a href="en/index.html" class="lang-choice-btn">
+        <span class="lang-flag">🌏</span>
+        <span class="lang-text">
+          <span class="lang-name">English</span>
+          <span class="lang-desc">From our farms to your table</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS (Thai main) -->
+<div class="lp-how">
+  <div class="lp-how-inner">
+    <span class="section-label" style="display:block; margin-bottom:1rem;">วิธีการทำงาน</span>
+    <h2>สั่งก่อน จ่ายก่อน แล้วค่อยนำเข้า</h2>
+    <p>
+      ต่างจากร้านค้าทั่วไป เราไม่สต็อกสินค้าไว้ก่อน<br>
+      รวบรวมออเดอร์จากชุมชน → เก็บเงิน → นำเข้าจากไทย
+    </p>
+
+    <div class="lp-flow">
+      <div class="lp-flow-step">
+        <span class="lp-flow-icon">📋</span>
+        <span class="lp-flow-label">สั่งซื้อ<br><small style="font-weight:400;color:var(--text-light);">注文</small></span>
+      </div>
+      <div class="lp-flow-arrow">→</div>
+      <div class="lp-flow-step">
+        <span class="lp-flow-icon">💰</span>
+        <span class="lp-flow-label">ชำระเงิน<br><small style="font-weight:400;color:var(--text-light);">集金</small></span>
+      </div>
+      <div class="lp-flow-arrow">→</div>
+      <div class="lp-flow-step">
+        <span class="lp-flow-icon">🌿</span>
+        <span class="lp-flow-label">นำเข้าสินค้า<br><small style="font-weight:400;color:var(--text-light);">仕入れ</small></span>
+      </div>
+      <div class="lp-flow-arrow">→</div>
+      <div class="lp-flow-step">
+        <span class="lp-flow-icon">🏠</span>
+        <span class="lp-flow-label">จัดส่ง<br><small style="font-weight:400;color:var(--text-light);">お届け</small></span>
+      </div>
+    </div>
+
+    <div class="lp-benefits">
+      <div class="lp-benefit">
+        <span class="lp-benefit-icon">📦</span>
+        <h3>ลดความเสี่ยงด้านสต็อก</h3>
+        <p>นำเข้าเฉพาะที่มีออเดอร์ ไม่มีสินค้าค้างสต็อกหรือเสียหาย</p>
+      </div>
+      <div class="lp-benefit">
+        <span class="lp-benefit-icon">🌱</span>
+        <h3>เริ่มต้นได้แม้ขนาดเล็ก</h3>
+        <p>ออเดอร์ขั้นต่ำไม่มาก ก็สามารถนำเข้าตรงจากไทยได้</p>
+      </div>
+      <div class="lp-benefit">
+        <span class="lp-benefit-icon">🤝</span>
+        <h3>ตอบโจทย์ความต้องการชุมชน</h3>
+        <p>สินค้าที่ชุมชนอยากได้ ชุมชนเป็นคนขับเคลื่อน</p>
       </div>
     </div>
   </div>
+</div>
+
+<!-- TARGET -->
+<div class="lp-target">
+  <div class="lp-target-inner">
+    <span class="section-label" style="display:block; margin-bottom:1rem;">กลุ่มเป้าหมาย</span>
+    <h2>สำหรับใครบ้าง?</h2>
+    <div class="lp-target-list">
+      <span class="lp-target-chip">🇹🇭 ชุมชนไทยในต่างประเทศ</span>
+      <span class="lp-target-chip">🍽️ ร้านอาหารไทย</span>
+      <span class="lp-target-chip">🛒 ผู้บริโภคที่ต้องการวัตถุดิบไทย</span>
+    </div>
+  </div>
+</div>
+
+<!-- VISION -->
+<div class="lp-vision">
+  <div class="lp-vision-inner">
+    <span class="section-label">วิสัยทัศน์</span>
+    <h2>ตลาดสั่งซื้อร่วมที่เชื่อมต่อ<br>ชุมชนไทยทั่วโลก</h2>
+    <p>
+      เริ่มต้นจากชุมชนไทยในญี่ปุ่น<br>
+      ในอนาคต เราตั้งใจพัฒนาให้เป็นแพลตฟอร์มที่ชาวไทย<br>
+      ทั่วโลกสามารถหาซื้อวัตถุดิบบ้านเกิดได้ ไม่ว่าจะอยู่ที่ไหน
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="lp-footer">
+  <span class="lp-footer-logo">สวนครอบครัว</span>
+  <p>Suan Khrob Khrua — Thai Community Import Platform<br>
+  Nong Khai × Chiba × Kagoshima</p>
+  <p style="margin-top:1rem; opacity:0.35;">© 2025 Suan Khrob Khrua</p>
+</div>
+
 </body>
 </html>
