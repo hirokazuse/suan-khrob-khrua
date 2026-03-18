@@ -5,6 +5,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
 app.use(bodyParser.json());
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
