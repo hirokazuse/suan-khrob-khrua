@@ -186,12 +186,13 @@ ${config.product}のご注文ですね🥭
         const userText = event.message.text.trim();
         lastMessageTime.set(senderId, Date.now());
 
-        // セッションなし
-        if (!sessions.has(senderId)) {
-          const detected = detectProduct(userText);
+// セッションなし
+if (!sessions.has(senderId)) {
 
-          if (detected === 'マンゴー') {
-            const msg = `ご利用ありがとうございます😊
+  const detected = detectProduct(userText);
+
+  if (detected === 'マンゴー') {
+    const msg = `ご利用ありがとうございます😊
 こちらはAsiannetshopramaniの公式注文ページです。
 
 マンゴーのご注文ですね🥭
@@ -199,24 +200,23 @@ ${config.product}のご注文ですね🥭
 
 1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
 
-            sessions.set(senderId, [{ role: 'assistant', content: msg }]);
-            await sendMessage(senderId, msg);
-            continue;
-          }
+    sessions.set(senderId, [{ role: 'assistant', content: msg }]);
+    await sendMessage(senderId, msg);
+    continue;
+  }
 
-          // マンゴー以外 → 人対応
-          await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
+  // ★ これを必ず追加
+  await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
 
-          await sendToGAS({
-            type: 'operator_request',
-            user_id: senderId,
-            message: userText,
-            timestamp: new Date().toISOString()
-          });
+  await sendToGAS({
+    type: 'operator_request',
+    user_id: senderId,
+    message: userText,
+    timestamp: new Date().toISOString()
+  });
 
-          continue;
-        }
-
+  continue;
+}
         // ===== Claude =====
         const reply = await getChatResponse(senderId, userText);
 
