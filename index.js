@@ -37,7 +37,7 @@ const getProductConfig = (ref) => {
     return { product: 'マンゴー', size: '14個（標準）' };
   }
   if (ref.includes('mango_16')) {
-    return { product: 'マンゴー', size: '16個（小）' };
+    return { product: 'マンゴー', size: '16個（小ぶり）' };
   }
   if (ref.includes('mango')) {
     return { product: 'マンゴー' };
@@ -157,16 +157,18 @@ app.post('/webhook', async (req, res) => {
 
         if (config?.product === 'マンゴー') {
           const msg = config.size
-            ? `${config.product}（${config.size}）ですね😊
+            ? `ご利用ありがとうございます😊
+こちらはAsiannetshopramaniの公式注文ページです。
 
-何ケースご注文されますか？
-まとめ買いでお得です✨
+${config.product}（${config.size}）ですね🥭
+何ケースご希望ですか？
 
 1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`
-            : `${config.product}のご注文ですね😊
+            : `ご利用ありがとうございます😊
+こちらはAsiannetshopramaniの公式注文ページです。
 
-何ケースご注文されますか？
-まとめ買いでお得です✨
+${config.product}のご注文ですね🥭
+何ケースご希望ですか？
 
 1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
 
@@ -184,15 +186,16 @@ app.post('/webhook', async (req, res) => {
         const userText = event.message.text.trim();
         lastMessageTime.set(senderId, Date.now());
 
-        // セッションなし → 商品判定
+        // セッションなし
         if (!sessions.has(senderId)) {
           const detected = detectProduct(userText);
 
           if (detected === 'マンゴー') {
-            const msg = `マンゴーのご注文ですね😊
+            const msg = `ご利用ありがとうございます😊
+こちらはAsiannetshopramaniの公式注文ページです。
 
+マンゴーのご注文ですね🥭
 何ケースご希望ですか？
-まとめ買いでお得です✨
 
 1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
 
@@ -201,7 +204,7 @@ app.post('/webhook', async (req, res) => {
             continue;
           }
 
-          // マンゴー以外 → オペレーター
+          // マンゴー以外 → 人対応
           await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
 
           await sendToGAS({
