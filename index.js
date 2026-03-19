@@ -207,9 +207,33 @@ app.post('/webhook', async (req, res) => {
           const detected = detectProduct(userText);
 
           if (detected) {
-            const msg = `${detected}のご注文ですね😊
+if (!sessions.has(senderId)) {
+  const detected = detectProduct(userText);
+
+  if (detected) {
+
+    let msg;
+
+    if (detected === 'マンゴー') {
+      msg = `マンゴーのご注文ですね😊
+
 何ケースご希望ですか？
-1 / 2 / 3 / 4以上`;
+まとめ買いでお得です✨
+
+1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
+    } else {
+      msg = `${detected}のご注文ですね😊
+
+数量を教えてください。
+
+1 / 2 / 3 / 4以上 / เจ้าหน้าที่に相談`;
+    }
+
+    sessions.set(senderId, [{ role: 'assistant', content: msg }]);
+    await sendMessage(senderId, msg);
+    continue;
+  }
+}
 
             sessions.set(senderId, [{ role: 'assistant', content: msg }]);
             await sendMessage(senderId, msg);
