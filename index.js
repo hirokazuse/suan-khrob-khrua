@@ -9,13 +9,57 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// ===== セッション管理（TTL付き）=====
+// ===== セッション管理 =====
 const sessions = new Map();
 const sessionTimestamps = new Map();
 const lastMessageTime = new Map();
+const SESSION_TTL = 30 * 60 * 1000;
 
-const SESSION_TTL = 30 * 60 * 1000; // 30分
+// ===== 商品定義 =====
+const PRODUCTS = {
+  mango: { name: 'マンゴー' },
+  pakchee: { name: 'パクチー' }
+};
 
+// ===== 商品判定 =====
+const detectProduct = (text) => {
+  if (!text) return null;
+
+  if (text.includes('マンゴー') || text.toLowerCase().includes('mango')) {
+    return PRODUCTS.mango.name;
+  }
+
+  if (text.includes('パクチー') || text.toLowerCase().includes('pakchee')) {
+    return PRODUCTS.pakchee.name;
+  }
+
+  return null;
+};
+
+// ===== ref解析 =====
+const getProductConfig = (ref) => {
+  if (!ref) return null;
+
+  if (ref.includes('mango_12')) {
+    return { product: 'マンゴー', size: '12個（大玉）' };
+  }
+  if (ref.includes('mango_14')) {
+    return { product: 'マンゴー', size: '14個（標準）' };
+  }
+  if (ref.includes('mango_16')) {
+    return { product: 'マンゴー', size: '16個（小）' };
+  }
+  if (ref.includes('mango')) {
+    return { product: 'マンゴー' };
+  }
+  if (ref.includes('consult')) {
+    return { consult: true };
+  }
+
+  return null;
+};
+
+// ===== セッション取得 =====
 const getSession = (senderId) => {
   const now = Date.now();
 
@@ -35,50 +79,7 @@ const getSession = (senderId) => {
   return sessions.get(senderId);
 };
 
-// ===== オペレーターキーワード =====
-const OPERATOR_KEYWORDS = ['เจ้าหน้าที่', 'ติดต่อคน', 'ขอคุยกับคน'];
-
-// ===== 注文完了メッセージ =====
-const ORDER_COMPLETE_MSG = `ご注文ありがとうございました！確認後にご連絡いたします🙏
-ขอบคุณสำหรับคำสั่งซื้อ! เราจะติดต่อกลับหลังจากตรวจสอบแล้ว🙏
-Thank you for your order! We will contact you after confirmation🙏`;
-
-// ===== システムプロンプト（強化版）=====
-const SYSTEM_PROMPT = `あなたはFacebook Messenger上で動作する注文受付アシスタントです。
-目的は「マンゴーの注文を正確に取得し、途中離脱を防ぎながら、必要に応じて人間オペレーターへ自然に引き継ぐこと」です。
-
-# 基本ルール
-- 会話は必ずアンケート形式（1質問ずつ）
-- 一度に複数質問しない
-- 必ず選択肢を提示
-- 常に「เจ้าหน้าที่に相談する」を含める
-- プレーンテキストのみ
-
-# 売上最大化ルール
-- 4ケース以上で送料無料
-- 数量選択時に「まとめるとお得」と伝える
-- 迷っている場合は自然に4ケースを提案
-
-# トーン
-- 短く・親切・安心感
-- 日本語＋タイ語
-
-# フロー
-1 数量確認
-2 配送先
-3 支払い
-4 確認
-5 完了（JSON出力）
-
-# JSON形式
-ORDER_JSON:{"product":"mango","quantity":"","address":"","payment":"","timestamp":"","user_id":""}
-
-# オペレーター条件
-- キーワード検出
-- 不明確な入力2回
-- クレーム`;
-
-// ===== Facebook送信 =====
+// ===== メッセージ送信 =====
 const sendMessage = async (recipientId, text) => {
   await axios.post(
     `https://graph.facebook.com/v18.0/me/messages`,
@@ -92,15 +93,36 @@ const sendMessage = async (recipientId, text) => {
   );
 };
 
-// ===== ウェルカム =====
-const getWelcomeMessage = (ref) => {
-  const messages = {
-    mango: '🥭 Thai Premium Food Club Japanへようこそ！\nマンゴー注文です。\n\nそのまま「注文」と送ってください😊'
-  };
-  return messages[ref] || '🌟 ようこそ！';
+// ===== GAS送信 =====
+const sendToGAS = async (data) => {
+  if (process.env.GAS_URL) {
+    await axios.post(process.env.GAS_URL, data);
+  }
 };
 
-// ===== Claude応答 =====
+// ===== Claude =====
+const SYSTEM_PROMPT = `あなたは注文受付アシスタントです。
+
+# ルール
+- 1質問ずつ
+- 選択肢を提示
+- プレーンテキストのみ
+
+# 商品
+- マンゴー
+- パクチー
+- その他
+
+最初に商品を確認すること
+
+# 販売
+- 4ケース以上で送料無料
+- まとめ買い提案
+
+# JSON
+ORDER_JSON:{"product":"","quantity":"","address":"","payment":"","timestamp":"","user_id":""}
+`;
+
 const getChatResponse = async (senderId, userMessage) => {
   const history = getSession(senderId);
   history.push({ role: 'user', content: userMessage });
@@ -112,49 +134,29 @@ const getChatResponse = async (senderId, userMessage) => {
     messages: history
   });
 
-  const assistantText = response.content[0].text;
-  history.push({ role: 'assistant', content: assistantText });
+  const text = response.content[0].text;
+  history.push({ role: 'assistant', content: text });
 
-  return assistantText;
+  return text;
 };
 
-// ===== GAS送信 =====
-const sendToGAS = async (data) => {
-  if (process.env.GAS_URL) {
-    await axios.post(process.env.GAS_URL, data);
-  }
-};
+// ===== 商品選択メッセージ =====
+const askProductMessage = `どの商品をご希望ですか？😊
+マンゴー / パクチー / その他 / เจ้าหน้าที่に相談`;
 
-// ===== 離脱リマインド =====
+// ===== リマインド =====
 setInterval(() => {
   const now = Date.now();
 
   for (const [userId, time] of lastMessageTime.entries()) {
     if (now - time > 5 * 60 * 1000) {
-      sendMessage(
-        userId,
-        'ご注文の途中ですが続けますか？😊\nเจ้าหน้าที่に相談もできます'
-      );
+      sendMessage(userId, 'ご注文の途中ですが続けますか？😊');
       lastMessageTime.delete(userId);
     }
   }
 }, 60000);
 
-// ===== Webhook検証 =====
-app.get('/webhook', (req, res) => {
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-  const mode = req.query['hub.mode'];
-  const token = req.query['hub.verify_token'];
-  const challenge = req.query['hub.challenge'];
-
-  if (mode && token === VERIFY_TOKEN) {
-    res.status(200).send(challenge);
-  } else {
-    res.sendStatus(403);
-  }
-});
-
-// ===== メッセージ受信 =====
+// ===== Webhook =====
 app.post('/webhook', async (req, res) => {
   const body = req.body;
   if (body.object !== 'page') return res.sendStatus(404);
@@ -169,53 +171,71 @@ app.post('/webhook', async (req, res) => {
         event.referral?.ref ||
         event.postback?.payload;
 
+      // ===== ref処理 =====
       if (ref) {
         sessions.delete(senderId);
-        const welcome = getWelcomeMessage(ref.toLowerCase());
-        await sendMessage(senderId, welcome);
-        continue;
-      }
 
-      if (event.message?.text) {
-        const userText = event.message.text.trim();
+        const config = getProductConfig(ref.toLowerCase());
 
-        lastMessageTime.set(senderId, Date.now());
-
-        // 開始トリガー
-        if (userText.includes('注文') || userText.toLowerCase().includes('start')) {
-          sessions.delete(senderId);
-        }
-
-        // オペレーター
-        if (OPERATOR_KEYWORDS.some(kw => userText.includes(kw))) {
-          await sendToGAS({
-            type: 'operator_request',
-            user_id: senderId,
-            message: userText,
-            timestamp: new Date().toISOString()
-          });
-
-          sessions.delete(senderId);
+        if (config?.consult) {
           await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
           continue;
         }
 
+        if (config?.product) {
+          const msg = config.size
+            ? `${config.product}（${config.size}）ですね😊
+何ケースご注文されますか？
+1 / 2 / 3 / 4以上`
+            : `${config.product}のご注文ですね😊
+何ケースご注文されますか？
+1 / 2 / 3 / 4以上`;
+
+          sessions.set(senderId, [{ role: 'assistant', content: msg }]);
+          await sendMessage(senderId, msg);
+          continue;
+        }
+      }
+
+      // ===== 通常メッセージ =====
+      if (event.message?.text) {
+        const userText = event.message.text.trim();
+        lastMessageTime.set(senderId, Date.now());
+
+        // セッションなし → 商品判定
+        if (!sessions.has(senderId)) {
+          const detected = detectProduct(userText);
+
+          if (detected) {
+            const msg = `${detected}のご注文ですね😊
+何ケースご希望ですか？
+1 / 2 / 3 / 4以上`;
+
+            sessions.set(senderId, [{ role: 'assistant', content: msg }]);
+            await sendMessage(senderId, msg);
+            continue;
+          }
+
+          await sendMessage(senderId, askProductMessage);
+          continue;
+        }
+
+        // Claude応答
         const reply = await getChatResponse(senderId, userText);
 
-        // JSON検出（改善版）
+        // JSON検出
         if (reply.includes('ORDER_JSON:')) {
-          const jsonMatch = reply.match(/ORDER_JSON:(\{[\s\S]*?\})/);
+          const match = reply.match(/ORDER_JSON:(\{[\s\S]*?\})/);
 
-          if (jsonMatch) {
-            const orderData = JSON.parse(jsonMatch[1]);
+          if (match) {
+            const orderData = JSON.parse(match[1]);
             orderData.user_id = senderId;
             orderData.timestamp = new Date().toISOString();
 
-            await sendToGAS({ ...orderData, raw_text: userText });
-            await sendMessage(senderId, ORDER_COMPLETE_MSG);
+            await sendToGAS(orderData);
+            await sendMessage(senderId, 'ご注文ありがとうございます🙏');
 
             sessions.delete(senderId);
-            lastMessageTime.delete(senderId);
             continue;
           }
         }
@@ -223,27 +243,17 @@ app.post('/webhook', async (req, res) => {
         await sendMessage(senderId, reply);
       }
 
-    } catch (error) {
-      console.error('処理エラー:', error);
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  res.status(200).send('EVENT_RECEIVED');
+  res.status(200).send('OK');
 });
 
 // ===== 起動 =====
 const PORT = process.env.PORT || 3000;
 
-console.log('=== ENV CHECK ===');
-console.log('VERIFY_TOKEN:', process.env.VERIFY_TOKEN ? 'OK' : 'NG');
-console.log('ANTHROPIC_API_KEY:', process.env.ANTHROPIC_API_KEY ? 'OK' : 'NG');
-console.log('PAGE_ACCESS_TOKEN:', process.env.PAGE_ACCESS_TOKEN ? 'OK' : 'NG');
-console.log('GAS_URL:', process.env.GAS_URL ? 'OK' : 'NG');
-
 app.listen(PORT, () => {
   console.log(`Bot running on ${PORT}`);
-});
-
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Error:', err);
 });
