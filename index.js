@@ -15,22 +15,12 @@ const sessionTimestamps = new Map();
 const lastMessageTime = new Map();
 const SESSION_TTL = 30 * 60 * 1000;
 
-// ===== 商品定義 =====
-const PRODUCTS = {
-  mango: { name: 'マンゴー' },
-  pakchee: { name: 'パクチー' }
-};
-
 // ===== 商品判定 =====
 const detectProduct = (text) => {
   if (!text) return null;
 
   if (text.includes('マンゴー') || text.toLowerCase().includes('mango')) {
-    return PRODUCTS.mango.name;
-  }
-
-  if (text.includes('パクチー') || text.toLowerCase().includes('pakchee')) {
-    return PRODUCTS.pakchee.name;
+    return 'マンゴー';
   }
 
   return null;
@@ -103,23 +93,10 @@ const sendToGAS = async (data) => {
 // ===== Claude =====
 const SYSTEM_PROMPT = `あなたは注文受付アシスタントです。
 
-# ルール
 - 1質問ずつ
-- 選択肢を提示
+- シンプルに
 - プレーンテキストのみ
 
-# 商品
-- マンゴー
-- パクチー
-- その他
-
-最初に商品を確認すること
-
-# 販売
-- 4ケース以上で送料無料
-- まとめ買い提案
-
-# JSON
 ORDER_JSON:{"product":"","quantity":"","address":"","payment":"","timestamp":"","user_id":""}
 `;
 
@@ -139,10 +116,6 @@ const getChatResponse = async (senderId, userMessage) => {
 
   return text;
 };
-
-// ===== 商品選択メッセージ =====
-const askProductMessage = `どの商品をご希望ですか？😊
-マンゴー / パクチー / その他 / เจ้าหน้าที่に相談`;
 
 // ===== リマインド =====
 setInterval(() => {
@@ -182,19 +155,28 @@ app.post('/webhook', async (req, res) => {
           continue;
         }
 
-        if (config?.product) {
+        if (config?.product === 'マンゴー') {
           const msg = config.size
             ? `${config.product}（${config.size}）ですね😊
+
 何ケースご注文されますか？
-1 / 2 / 3 / 4以上`
+まとめ買いでお得です✨
+
+1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`
             : `${config.product}のご注文ですね😊
+
 何ケースご注文されますか？
-1 / 2 / 3 / 4以上`;
+まとめ買いでお得です✨
+
+1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
 
           sessions.set(senderId, [{ role: 'assistant', content: msg }]);
           await sendMessage(senderId, msg);
           continue;
         }
+
+        await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
+        continue;
       }
 
       // ===== 通常メッセージ =====
@@ -206,48 +188,35 @@ app.post('/webhook', async (req, res) => {
         if (!sessions.has(senderId)) {
           const detected = detectProduct(userText);
 
-          if (detected) {
-if (!sessions.has(senderId)) {
-  const detected = detectProduct(userText);
-
-  if (detected) {
-
-    let msg;
-
-    if (detected === 'マンゴー') {
-      msg = `マンゴーのご注文ですね😊
+          if (detected === 'マンゴー') {
+            const msg = `マンゴーのご注文ですね😊
 
 何ケースご希望ですか？
 まとめ買いでお得です✨
 
 1 / 2 / 3 / 4以上（送料無料） / เจ้าหน้าที่に相談`;
-    } else {
-      msg = `${detected}のご注文ですね😊
-
-数量を教えてください。
-
-1 / 2 / 3 / 4以上 / เจ้าหน้าที่に相談`;
-    }
-
-    sessions.set(senderId, [{ role: 'assistant', content: msg }]);
-    await sendMessage(senderId, msg);
-    continue;
-  }
-}
 
             sessions.set(senderId, [{ role: 'assistant', content: msg }]);
             await sendMessage(senderId, msg);
             continue;
           }
 
-          await sendMessage(senderId, askProductMessage);
+          // マンゴー以外 → オペレーター
+          await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
+
+          await sendToGAS({
+            type: 'operator_request',
+            user_id: senderId,
+            message: userText,
+            timestamp: new Date().toISOString()
+          });
+
           continue;
         }
 
-        // Claude応答
+        // ===== Claude =====
         const reply = await getChatResponse(senderId, userText);
 
-        // JSON検出
         if (reply.includes('ORDER_JSON:')) {
           const match = reply.match(/ORDER_JSON:(\{[\s\S]*?\})/);
 
