@@ -187,7 +187,8 @@ ${config.product}のご注文ですね🥭
         lastMessageTime.set(senderId, Date.now());
 
 // セッションなし
-if (!sessions.has(senderId) || (sessions.get(senderId)?.length ?? 0) === 0){
+// セッションなし
+if (!sessions.has(senderId) || (sessions.get(senderId)?.length ?? 0) === 0) {
 
   const detected = detectProduct(userText);
 
@@ -205,7 +206,7 @@ if (!sessions.has(senderId) || (sessions.get(senderId)?.length ?? 0) === 0){
     continue;
   }
 
-  // ★ これを必ず追加
+  // マンゴー以外
   await sendMessage(senderId, '担当者が対応いたします。少々お待ちください🙏');
 
   await sendToGAS({
@@ -217,6 +218,7 @@ if (!sessions.has(senderId) || (sessions.get(senderId)?.length ?? 0) === 0){
 
   continue;
 }
+
         // ===== Claude =====
         const reply = await getChatResponse(senderId, userText);
 
