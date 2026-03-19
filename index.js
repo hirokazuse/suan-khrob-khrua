@@ -187,8 +187,7 @@ ${config.product}のご注文ですね🥭
         lastMessageTime.set(senderId, Date.now());
 
 // セッションなし
-if (!sessions.has(senderId) || sessions.get(senderId).length === 0) {
-
+if (!sessions.has(senderId) || (sessions.get(senderId)?.length ?? 0) === 0){
 
   const detected = detectProduct(userText);
 
